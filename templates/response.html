@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ELI5 - Conversation</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: #ffffff;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .response-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: rgba(45, 45, 45, 0.95);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    .message {
+      margin-bottom: 25px;
+      padding: 20px;
+      border-radius: 10px;
+      word-wrap: break-word;
+      transition: transform 0.2s ease;
+    }
+    .message:hover {
+      transform: translateY(-2px);
+    }
+    /* Style for user messages */
+    .message.user {
+      background: linear-gradient(to right, #2c5282, #3182ce);
+      text-align: right;
+      margin-left: 50px;
+    }
+    /* Style for bot responses */
+    .message.bot {
+      background: linear-gradient(to right, #2d3748, #4a5568);
+      text-align: left;
+      margin-right: 50px;
+    }
+    .message h2 {
+      margin: 0 0 10px 0;
+      font-size: 1.2em;
+      color: #e2e8f0;
+    }
+    .message p {
+      margin: 0;
+    }
+    .back-button {
+      padding: 12px 25px;
+      background-color: #2d2d2d;
+      color: white;
+      border: 1px solid #4a5568;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .back-button:hover {
+      background-color: #363636;
+      border-color: #63b3ed;
+      transform: translateY(-1px);
+    }
+    .continue-form {
+      margin-top: 30px;
+    }
+    .continue-form input[type="text"] {
+      width: 100%;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid #4a5568;
+      background-color: rgba(45, 45, 45, 0.9);
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+    .continue-form input[type="text"]:focus {
+      border-color: #1d42c6;
+      box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
+    }
+    .continue-form button {
+      padding: 12px 25px;
+      background-color: #2d2d2d;
+      color: white;
+      border: 1px solid #4a5568;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .continue-form button:hover {
+      background-color: #363636;
+      border-color: #63b3ed;
+      transform: translateY(-1px);
+    }
+    /* Optional: Styling for specific content blocks */
+    .key-point {
+      background-color: #2d3748;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      border-left: 4px solid #63b3ed;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    .example {
+      background-color: #2d3748;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      border-left: 4px solid #48bb78;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    .tweet-button {
+      background: linear-gradient(to right, #0691e8, #0391f6);
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .tweet-button:hover {
+      background: linear-gradient(to right, #0d8ae6, #0c7ac4);
+      transform: translateY(-1px);
+    }
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
+    
+    .tweet-consent {
+        color: #888;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    #continueLoading {
+        text-align: center;
+        margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+    
+
+  <div class="response-container">
+    <!-- Loop through the conversation thread -->
+    {% for msg in conversation %}
+    <div class="message {% if msg.sender == 'user' %}user{% elif msg.sender == 'eli5' %}bot{% endif %}">
+        {% if msg.sender == 'user' %}
+        <!-- removed msg.message from if statement in <h2> Your Question: -->
+          <h2>Your Question: </h2>
+        {% elif msg.sender == 'eli5' %}
+          <h2>Simple Explanation:</h2>
+        {% endif %}
+        <p>{{ msg.message | safe }}</p>
+      </div>
+    {% endfor %}
+
+
+    <!-- For continuing this conversation -->
+
+    <form class="continue-form" action="/continue" method="POST" id="continueForm">
+        <input type="text" name="query" placeholder="Type your next question here..." required>
+        <div class="form-options">
+            <label class="tweet-consent">
+                <input type="checkbox" name="post_to_twitter" checked> 
+                Share this response on X (Twitter)
+            </label>
+            <button type="submit" id="continueButton">Send</button>
+        </div>
+    </form>
+
+    <!-- Loading spinner (initially hidden) -->
+    <div id="continueLoading" style="display: none;">
+        <div class="spinner"></div>
+        <p style="color: #888;">Generating your explanation...</p>
+    </div>
+
+    <!-- Button for a new convo-->
+    <a href="/new_search" class="back-button">Start a new conversation</a>
+    
+    {% if tweet_url %}
+    <button class="tweet-button" onclick="viewTweet('{{tweet_url}}')">
+        View Your Response on X!
+    </button>
+    {% endif %}
+
+    <script>
+      document.getElementById('continueForm').addEventListener('submit', function(e) {
+        document.getElementById('continueLoading').style.display = 'block';
+        document.getElementById('continueButton').disabled = true;
+      });
+      
+      function viewTweet(tweetUrl) {
+        window.open(tweetUrl, '_blank');
+      }
+    </script>
+  </div>
+</body>
+</html>

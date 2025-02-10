@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELI5 - Simple Explanations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+        }
+        .search-container {
+            margin-top: 150px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 72px;
+            color: #4a9eff;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        .search-box {
+            width: 500px;
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #333;
+            border-radius: 24px;
+            outline: none;
+            margin-bottom: 20px;
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+        .search-box::placeholder {
+            color: #888;
+        }
+        .search-box:hover, .search-box:focus {
+            box-shadow: 0 1px 6px rgba(74, 158, 255, 0.2);
+            border-color: #4a9eff;
+        }
+        .search-button {
+            background-color: #2d2d2d;
+            color: #4a9eff;
+            border: 1px solid #4a9eff;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .search-button:hover {
+            background-color: #4a9eff;
+            color: #1a1a1a;
+        }
+        .tagline {
+            color: #888;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .tweet-consent {
+            color: #076ccb;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 20px auto;
+            border: 4px solid #333;
+            border-top: 4px solid #4a9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <div class="logo">ELI5</div>
+        <div class="tagline">Simple explanations for complex topics</div>
+        <br>
+        <br>
+        <form action="/search" method="POST" id="searchForm">
+            <input type="text" name="query" class="search-box" placeholder="What would you like explained simply?" required>
+            <div class="form-options">
+                <label class="tweet-consent">
+                    <input type="checkbox" name="post_to_twitter" checked> 
+                    Share this response on X (Twitter)
+                </label>
+                <button type="submit" class="search-button" id="searchButton">Search</button>
+            </div>
+        </form>
+        <div id="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p style="color: #888;">Generating your explanation...</p>
+        </div>
+        {% if error %}
+        <div class="error-message" style="color: #ff4444; margin-top: 20px;">
+            {{ error }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="response-container">
+        
+    </div>
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('searchButton').disabled = true;
+        });
+    </script>
+</body>
+</html>
