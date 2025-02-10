@@ -36,8 +36,8 @@ def postTweet(text):
             return None
             
         # Add a unique timestamp to prevent duplicate tweets
-        
-        tweet_text = text
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        tweet_text = f"{text}\n\n[{timestamp}]"
         
         # Post the tweet
         response = client.create_tweet(text=tweet_text)

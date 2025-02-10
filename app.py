@@ -151,8 +151,8 @@ if __name__ == '__main__':
 
 """
 Some portions of this code are adapted from:
-Repository: [repository name]
-Author: [original author]
-License: [license type]
-Link: [repository link]
+Repository: [ELI5]
+Author: [Sujan30]
+
+Link: [https://github.com/Sujan30/Eli5]
 """ 
